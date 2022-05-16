@@ -4,6 +4,7 @@ extends Node
 const VERSION := "0.1"
 
 const BLOCK_SIZE := 64
+const MAP_WIDTH := 15
 
 var splash_shown = false
 

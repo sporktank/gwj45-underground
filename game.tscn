@@ -1,8 +1,19 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://lizard.tscn" type="PackedScene" id=1]
+[ext_resource path="res://mine.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game.gd" type="Script" id=3]
 
 [node name="Game" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Mine" parent="." instance=ExtResource( 2 )]
 
 [node name="Lizard" parent="." instance=ExtResource( 1 )]
-position = Vector2( 64, 64 )
+position = Vector2( 448, 0 )
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2( 0, 96 )
+offset = Vector2( 0, -270 )
+anchor_mode = 0
+current = true
