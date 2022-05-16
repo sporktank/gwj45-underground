@@ -15,6 +15,8 @@ onready var debug_tilemap := $Debug
 
 
 func _ready() -> void:
+	Events.connect("lizard_attacked", self, "_on_lizard_attacked")
+	
 	generate()
 
 
@@ -42,7 +44,7 @@ func generate() -> void:
 		
 		y_offset += section_height
 	
-	# Enforce some structures.
+	# Enforce some structure.
 	block_map[7][0].is_border = false
 	block_map[7][0].is_mine = false
 	block_map[7][0].solid = false ; block_map[7][1].solid = false
@@ -59,7 +61,7 @@ func generate() -> void:
 						if dx != 0 or dy != 0:
 							block_map[x+dx][y+dy].number += 1
 	
-	# Set debug tiles.
+	# Setup tilemaps.
 	for y in height:
 		for x in width:
 			set_block(x, y, block_map[x][y])
@@ -76,3 +78,11 @@ func _convert_block_to_tile_num(block: Block) -> int:
 		return 19
 	else:
 		return block.number + 10 * int(block.solid)
+
+
+func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
+	if x < 0 or y < 0 or x >= width or y >= height:
+		return
+	
+	var block := (block_map[x][y] as Block)
+	

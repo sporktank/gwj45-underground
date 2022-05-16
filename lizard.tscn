@@ -1,13 +1,11 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=40 format=2]
 
-[ext_resource path="res://sprites/lizard/lizard_left.png" type="Texture" id=1]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0003.png" type="Texture" id=2]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0006.png" type="Texture" id=3]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0004.png" type="Texture" id=4]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0007.png" type="Texture" id=5]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0005.png" type="Texture" id=6]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0002.png" type="Texture" id=7]
-[ext_resource path="res://sprites/lizard/lizard_front.png" type="Texture" id=8]
 [ext_resource path="res://sprites/lizard/lizard_run_back_0004.png" type="Texture" id=9]
 [ext_resource path="res://sprites/lizard/lizard_run_back_0003.png" type="Texture" id=10]
 [ext_resource path="res://sprites/lizard/lizard_run_front_0001.png" type="Texture" id=11]
@@ -20,7 +18,6 @@
 [ext_resource path="res://sprites/lizard/lizard_run_front_0000.png" type="Texture" id=18]
 [ext_resource path="res://sprites/lizard/lizard_run_left_0006.png" type="Texture" id=19]
 [ext_resource path="res://sprites/lizard/lizard_run_left_0003.png" type="Texture" id=20]
-[ext_resource path="res://sprites/lizard/lizard_back.png" type="Texture" id=21]
 [ext_resource path="res://sprites/lizard/lizard_run_back_0001.png" type="Texture" id=22]
 [ext_resource path="res://sprites/lizard/lizard_run_back_0002.png" type="Texture" id=23]
 [ext_resource path="res://sprites/lizard/lizard_run_left_0007.png" type="Texture" id=24]
@@ -28,6 +25,18 @@
 [ext_resource path="res://sprites/lizard/lizard_run_left_0001.png" type="Texture" id=26]
 [ext_resource path="res://sprites/lizard/lizard_run_left_0000.png" type="Texture" id=27]
 [ext_resource path="res://lizard.gd" type="Script" id=28]
+[ext_resource path="res://sprites/lizard/lizard_attack_front_0001.png" type="Texture" id=29]
+[ext_resource path="res://sprites/lizard/lizard_attack_front_0002.png" type="Texture" id=30]
+[ext_resource path="res://sprites/lizard/lizard_attack_front_0003.png" type="Texture" id=31]
+[ext_resource path="res://sprites/lizard/lizard_attack_front_0000.png" type="Texture" id=32]
+[ext_resource path="res://sprites/lizard/lizard_attack_left_0000.png" type="Texture" id=33]
+[ext_resource path="res://sprites/lizard/lizard_attack_back_0000.png" type="Texture" id=34]
+[ext_resource path="res://sprites/lizard/lizard_attack_back_0003.png" type="Texture" id=35]
+[ext_resource path="res://sprites/lizard/lizard_attack_back_0002.png" type="Texture" id=36]
+[ext_resource path="res://sprites/lizard/lizard_attack_left_0001.png" type="Texture" id=37]
+[ext_resource path="res://sprites/lizard/lizard_attack_back_0001.png" type="Texture" id=38]
+[ext_resource path="res://sprites/lizard/lizard_attack_left_0003.png" type="Texture" id=39]
+[ext_resource path="res://sprites/lizard/lizard_attack_left_0002.png" type="Texture" id=40]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -36,7 +45,7 @@ animations = [ {
 "name": "walk_left",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 27 ) ],
 "loop": true,
 "name": "idle_left",
 "speed": 12.0
@@ -46,12 +55,12 @@ animations = [ {
 "name": "walk_down",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 21 ) ],
+"frames": [ ExtResource( 13 ) ],
 "loop": true,
 "name": "idle_up",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 8 ) ],
+"frames": [ ExtResource( 18 ) ],
 "loop": true,
 "name": "idle_down",
 "speed": 12.0
@@ -59,6 +68,21 @@ animations = [ {
 "frames": [ ExtResource( 13 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 17 ), ExtResource( 16 ), ExtResource( 14 ) ],
 "loop": true,
 "name": "walk_up",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( 32 ), ExtResource( 29 ), ExtResource( 30 ), ExtResource( 31 ) ],
+"loop": false,
+"name": "attack_down",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( 34 ), ExtResource( 38 ), ExtResource( 36 ), ExtResource( 35 ) ],
+"loop": false,
+"name": "attack_up",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( 33 ), ExtResource( 37 ), ExtResource( 40 ), ExtResource( 39 ) ],
+"loop": false,
+"name": "attack_left",
 "speed": 12.0
 } ]
 
@@ -68,9 +92,11 @@ extents = Vector2( 31, 31 )
 [node name="Lizard" type="Area2D"]
 script = ExtResource( 28 )
 
+[node name="WalkTween" type="Tween" parent="."]
+
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-animation = "idle_down"
+animation = "attack_up"
 centered = false
 
 [node name="Debug" type="Label" parent="."]
@@ -106,3 +132,7 @@ cast_to = Vector2( 64, 0 )
 [node name="Left" type="RayCast2D" parent="RayCasts"]
 enabled = true
 cast_to = Vector2( -64, 0 )
+
+[connection signal="tween_all_completed" from="WalkTween" to="." method="_on_WalkTween_tween_all_completed"]
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="frame_changed" from="AnimatedSprite" to="." method="_on_AnimatedSprite_frame_changed"]
