@@ -61,21 +61,30 @@ func generate() -> void:
 						if dx != 0 or dy != 0:
 							block_map[x+dx][y+dy].number += 1
 	
-	# Setup tilemaps.
+	_update_tilemaps()
+
+
+func _update_tilemaps() -> void:
 	for y in height:
 		for x in width:
-			set_block(x, y, block_map[x][y])
+			_set_block(x, y, block_map[x][y])
 
 
-func set_block(x: int, y: int, block: Block) -> void:
+func _set_block(x: int, y: int, block: Block) -> void:
 	debug_tilemap.set_cell(x, y, _convert_block_to_tile_num(block))
 
 
 func _convert_block_to_tile_num(block: Block) -> int:
+#	if block.is_border:
+#		return 9
+#	elif block.is_mine:
+#		return 19
+#	else:
+#		return block.number + 10 * int(block.solid)
 	if block.is_border:
 		return 9
-	elif block.is_mine:
-		return 19
+	elif block.solid:
+		return 10
 	else:
 		return block.number + 10 * int(block.solid)
 
@@ -86,3 +95,9 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
 	
 	var block := (block_map[x][y] as Block)
 	
+	if block.is_mine:
+		print("BOOM!!")
+	
+	elif block.solid:
+		block.solid = false
+		_update_tilemaps()  # TODO: This might be a slow down.
