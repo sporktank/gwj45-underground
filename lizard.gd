@@ -11,6 +11,10 @@ var initial_position := Vector2.ZERO
 
 onready var debug_label := $Debug
 onready var anim := $AnimatedSprite
+onready var raycast_left := $RayCasts/Left
+onready var raycast_right := $RayCasts/Right
+onready var raycast_up := $RayCasts/Up
+onready var raycast_down := $RayCasts/Down
 
 
 func _physics_process(delta: float) -> void:
@@ -36,7 +40,11 @@ func _physics_process(delta: float) -> void:
 
 
 func _update_debug_label() -> void:
-	debug_label.text = "state=%s\ndirection=%s" % [state, direction]
+	debug_label.text = "state=%s\ndirection=%s\nraycasts(lrud)=%s%s%s%s" % [
+		state, direction,
+		int(raycast_left.is_colliding()), int(raycast_right.is_colliding()),
+		int(raycast_up.is_colliding()), int(raycast_down.is_colliding())
+	]
 
 
 func snap_to_grid() -> void:
@@ -70,17 +78,22 @@ func update_anim() -> void:
 func idle(delta: float) -> int:
 	
 	if input_dir != Vector2.ZERO:
-		if input_dir.x < 0:
-			direction = Vector2.LEFT
-		elif input_dir.x > 0:
-			direction = Vector2.RIGHT
-		elif input_dir.y < 0:
-			direction = Vector2.UP
-		elif input_dir.y > 0:
-			direction = Vector2.DOWN
-		
 		initial_position = position
-		return Enums.LIZARD_STATE.WALK
+		if input_dir.x < 0 and not raycast_left.is_colliding():
+			direction = Vector2.LEFT
+			return Enums.LIZARD_STATE.WALK
+		elif input_dir.x > 0 and not raycast_right.is_colliding():
+			direction = Vector2.RIGHT
+			return Enums.LIZARD_STATE.WALK
+		elif input_dir.y < 0 and not raycast_up.is_colliding():
+			direction = Vector2.UP
+			return Enums.LIZARD_STATE.WALK
+		elif input_dir.y > 0 and not raycast_down.is_colliding():
+			direction = Vector2.DOWN
+			return Enums.LIZARD_STATE.WALK
+	
+	if Input.is_action_just_pressed("attack"):
+		return Enums.LIZARD_STATE.ATTACK
 	
 	return Enums.LIZARD_STATE.IDLE
 
