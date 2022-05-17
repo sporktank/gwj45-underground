@@ -8,6 +8,8 @@ var state: int = Enums.LIZARD_STATE.IDLE
 var direction := Vector2.RIGHT
 var input_dir := Vector2.ZERO
 var grid_position := Vector2.ZERO
+var selector_grid_position: Vector2
+var attack_position: Vector2
 
 onready var debug_label := $Debug
 onready var walk_tween := $WalkTween
@@ -16,9 +18,12 @@ onready var raycast_left := $RayCasts/Left
 onready var raycast_right := $RayCasts/Right
 onready var raycast_up := $RayCasts/Up
 onready var raycast_down := $RayCasts/Down
+onready var selector := $Selector
 
 
 func _ready() -> void:
+	selector.set_as_toplevel(true)
+	
 	_update_grid_position()
 	_update_anim()
 
@@ -36,16 +41,25 @@ func _process(delta: float) -> void:
 	if state == Enums.LIZARD_STATE.IDLE: 
 		_check_for_state_change()
 	
+	_update_selector()
+	
 	_update_debug_label()
 
 
 func _update_debug_label() -> void:
-	debug_label.text = "state=%s\ndirection=%s\nraycasts(lrud)=%s%s%s%s\ngrid=%s" % [
+	debug_label.text = "state=%s\ndirection=%s\nraycasts(lrud)=%s%s%s%s\ngrid=%s\nselector=%s" % [
 		state, direction,
 		int(raycast_left.is_colliding()), int(raycast_right.is_colliding()),
 		int(raycast_up.is_colliding()), int(raycast_down.is_colliding()),
-		grid_position
+		grid_position, selector_grid_position
 	]
+
+
+func _update_selector() -> void:
+	selector.global_position = ((get_global_mouse_position() - Vector2(32, 48)) / Global.BLOCK_SIZE).round() * Global.BLOCK_SIZE + Vector2(0, 16) + Vector2(32, 32)
+	selector_grid_position = ((selector.position - Vector2(0, 16) - Vector2(32, 32)) / Global.BLOCK_SIZE).round()
+	var dist := grid_position.distance_to(selector_grid_position)
+	selector.visible = 0 < dist and dist <= 1.5
 
 
 func _update_grid_position() -> void:
@@ -79,8 +93,18 @@ func _check_for_state_change() -> void:
 			return
 	
 	if Input.is_action_just_pressed("attack"):
+		attack_position = grid_position + direction
 		_attack()
 		return
+	
+	if Input.is_action_just_pressed("mouse_attack"):
+		if selector.visible:
+			direction = (selector_grid_position - grid_position)
+			if direction.length() > 1:
+				direction.y = 0.0
+			attack_position = selector_grid_position
+			_attack()
+			return
 	
 	_idle()
 
@@ -144,7 +168,7 @@ func _on_AnimatedSprite_animation_finished() -> void:
 
 func _on_AnimatedSprite_frame_changed() -> void:
 	if state == Enums.LIZARD_STATE.ATTACK and anim.frame == 2: # ?!?!
-		Events.emit_signal("lizard_attacked", self, int(grid_position.x + direction.x), int(grid_position.y + direction.y))
+		Events.emit_signal("lizard_attacked", self, int(attack_position.x), int(attack_position.y))
 
 
 func _on_WalkTween_tween_all_completed() -> void:
