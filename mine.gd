@@ -15,13 +15,16 @@ onready var game_tilemap := $Game
 onready var floor_tilemap := $Floor
 onready var walls_tilemap := $Walls
 onready var roof_tilemap := $YSort/Roof
+onready var flags_tilemap := $YSort/Flags
 onready var rocks_tilemap := $YSort/Rocks
-onready var all_tilemaps := [game_tilemap, floor_tilemap, walls_tilemap, roof_tilemap, rocks_tilemap]
+onready var all_tilemaps := [game_tilemap, floor_tilemap, walls_tilemap, roof_tilemap, flags_tilemap, rocks_tilemap]
 
 
 func _ready() -> void:
 	Events.connect("lizard_attacked", self, "_on_lizard_attacked")
+	Events.connect("lizard_flagged", self, "_on_lizard_flagged")
 	
+	randomize()
 	generate()
 
 
@@ -75,11 +78,8 @@ func generate() -> void:
 
 
 func _update_tilemaps() -> void:
-	game_tilemap.clear()
-	floor_tilemap.clear()
-	walls_tilemap.clear()
-	roof_tilemap.clear()
-	rocks_tilemap.clear()
+	for tilemap in all_tilemaps:
+		tilemap.clear()
 	
 	for y in height:
 		for x in width:
@@ -94,6 +94,7 @@ func _set_block(x: int, y: int, block: Block) -> void:
 	walls_tilemap.set_cell(x, y, 0 if block.is_border else -1)
 	roof_tilemap.set_cell(x, y, 0 if block.is_border else -1)
 	rocks_tilemap.set_cell(x, y, 0 if not block.is_border and block.solid else -1)
+	flags_tilemap.set_cell(x, y, 0 if block.flagged else -1)
 
 
 func _block_to_floor_tile(block: Block) -> int:
@@ -106,6 +107,8 @@ func _block_to_floor_tile(block: Block) -> int:
 func _block_to_game_tile(block: Block) -> int:
 	if block.is_border:
 		return 9
+	elif block.flagged:
+		return 0
 	elif block.is_mine:
 		return 19
 	else:
@@ -123,6 +126,8 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
 		return
 	
 	var block := (block_map[x][y] as Block)
+	if block.flagged:
+		return
 	
 	if block.is_mine:
 		print("BOOM!!")
@@ -155,8 +160,20 @@ func _cascade_zero_blocks(start_x: int, start_y: int) -> void:
 					continue
 				
 				var block := (block_map[x+dx][y+dy] as Block)
-				if not block.is_border and block.solid:
+				if not block.is_border and block.solid and not block.flagged:
 					block.solid = false
 					if block.number == 0:
 						xs.append(x+dx)
 						ys.append(y+dy)
+
+
+func _on_lizard_flagged(lizard: Lizard, x: int, y: int) -> void:
+	if x < 0 or y < 0 or x >= width or y >= height:
+		return
+	
+	var block := (block_map[x][y] as Block)
+	if block.is_border or not block.solid:
+		return
+	
+	block.flagged = not block.flagged
+	_update_tilemaps()

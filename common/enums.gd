@@ -6,4 +6,5 @@ enum LIZARD_STATE {
 	IDLE = 0,
 	WALK = 1,
 	ATTACK = 2,
+	FLAG = 3,
 }

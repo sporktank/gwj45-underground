@@ -63,7 +63,7 @@ func _update_selector() -> void:
 
 
 func _update_grid_position() -> void:
-	grid_position = (position / Global.BLOCK_SIZE).round()
+	grid_position = ((position - Vector2(0, 64)) / Global.BLOCK_SIZE).round()
 
 
 func _check_for_state_change() -> void:
@@ -96,7 +96,6 @@ func _check_for_state_change() -> void:
 		attack_position = grid_position + direction
 		_attack()
 		return
-	
 	if Input.is_action_just_pressed("mouse_attack"):
 		if selector.visible:
 			direction = (selector_grid_position - grid_position)
@@ -104,6 +103,19 @@ func _check_for_state_change() -> void:
 				direction.y = 0.0
 			attack_position = selector_grid_position
 			_attack()
+			return
+	
+	if Input.is_action_just_pressed("flag"):
+		attack_position = grid_position + direction
+		_flag()
+		return
+	if Input.is_action_just_pressed("mouse_flag"):
+		if selector.visible:
+			direction = (selector_grid_position - grid_position)
+			if direction.length() > 1:
+				direction.y = 0.0
+			attack_position = selector_grid_position
+			_flag()
 			return
 	
 	_idle()
@@ -135,6 +147,11 @@ func _attack() -> void:
 	_update_anim()
 
 
+func _flag() -> void:
+	state = Enums.LIZARD_STATE.FLAG
+	_update_anim()
+
+
 func _update_anim() -> void:
 	var anim_string := ""
 	
@@ -142,6 +159,7 @@ func _update_anim() -> void:
 		Enums.LIZARD_STATE.IDLE: anim_string = "idle_"
 		Enums.LIZARD_STATE.WALK: anim_string = "walk_"
 		Enums.LIZARD_STATE.ATTACK: anim_string = "attack_"
+		Enums.LIZARD_STATE.FLAG: anim_string = "attack_"  # NOTE: Re-using animation.
 	
 	if direction == Vector2.LEFT: 
 		anim_string += "left"
@@ -162,13 +180,17 @@ func _update_anim() -> void:
 
 func _on_AnimatedSprite_animation_finished() -> void:
 	match state:
-		Enums.LIZARD_STATE.ATTACK: 
+		Enums.LIZARD_STATE.ATTACK, Enums.LIZARD_STATE.FLAG: 
 			_check_for_state_change()
 
 
 func _on_AnimatedSprite_frame_changed() -> void:
+	
 	if state == Enums.LIZARD_STATE.ATTACK and anim.frame == 2: # ?!?!
 		Events.emit_signal("lizard_attacked", self, int(attack_position.x), int(attack_position.y))
+	
+	if state == Enums.LIZARD_STATE.FLAG and anim.frame == 2: # ?!?!
+		Events.emit_signal("lizard_flagged", self, int(attack_position.x), int(attack_position.y))
 
 
 func _on_WalkTween_tween_all_completed() -> void:

@@ -1,11 +1,10 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://mine.gd" type="Script" id=1]
 [ext_resource path="res://blocks/debug.png" type="Texture" id=2]
 [ext_resource path="res://blocks/floor.png" type="Texture" id=3]
 [ext_resource path="res://blocks/wall.png" type="Texture" id=4]
-[ext_resource path="res://sprites/lizard/lizard_attack_back_0000.png" type="Texture" id=5]
-[ext_resource path="res://blocks/rocks.png" type="Texture" id=6]
+[ext_resource path="res://blocks/flag.png" type="Texture" id=5]
 [ext_resource path="res://blocks/rocks-full.png" type="Texture" id=7]
 
 [sub_resource type="ConvexPolygonShape2D" id=2]
@@ -566,6 +565,28 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 0/shapes = [  ]
 0/z_index = 0
 
+[sub_resource type="TileSet" id=18]
+0/name = "flag.png 0"
+0/texture = ExtResource( 5 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 64, 64 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 1.0
+0/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": null,
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+0/z_index = 0
+
 [sub_resource type="TileSet" id=17]
 0/name = "rocks-full.png 0"
 0/texture = ExtResource( 7 )
@@ -589,28 +610,6 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 0/shape_one_way = false
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
-0/z_index = 0
-
-[sub_resource type="TileSet" id=16]
-0/name = "rocks.png 0"
-0/texture = ExtResource( 6 )
-0/tex_offset = Vector2( 0, -32 )
-0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 0, 0, 64, 96 )
-0/tile_mode = 0
-0/occluder_offset = Vector2( 0, 0 )
-0/navigation_offset = Vector2( 0, 0 )
-0/shape_offset = Vector2( 0, 0 )
-0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-0/shape_one_way = false
-0/shape_one_way_margin = 1.0
-0/shapes = [ {
-"autotile_coord": Vector2( 0, 0 ),
-"one_way": false,
-"one_way_margin": 1.0,
-"shape": null,
-"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
-} ]
 0/z_index = 0
 
 [node name="Mine" type="Node2D"]
@@ -646,20 +645,15 @@ cell_y_sort = true
 format = 1
 tile_data = PoolIntArray( 65537, 0, 0, 65538, 0, 0, 65539, 0, 0, 65540, 0, 0, 65541, 0, 0, 65542, 0, 0, 65543, 0, 0, 65544, 0, 0, 65545, 0, 0, 65546, 0, 0, 65547, 0, 0, 65548, 0, 0, 65549, 0, 0, 131073, 0, 0, 131085, 0, 0, 196609, 0, 0, 196621, 0, 0, 262145, 0, 0, 262157, 0, 0, 327681, 0, 0, 327693, 0, 0, 393217, 0, 0, 393229, 0, 0, 458765, 0, 0 )
 
+[node name="Flags" type="TileMap" parent="YSort"]
+position = Vector2( 0, 16 )
+tile_set = SubResource( 18 )
+cell_y_sort = true
+format = 1
+tile_data = PoolIntArray( 196612, 0, 0, 262148, 0, 0, 262151, 0, 0, 655365, 0, 0 )
+
 [node name="Rocks" type="TileMap" parent="YSort"]
 position = Vector2( 0, 24 )
 tile_set = SubResource( 17 )
 format = 1
 tile_data = PoolIntArray( 131080, 0, 0, 131085, 0, 196608, 196610, 0, 1, 196611, 0, 196610, 196612, 0, 2, 196613, 0, 196610, 196614, 0, 3, 196616, 0, 65536, 262146, 0, 65536, 262148, 0, 65536, 262150, 0, 65536, 262152, 0, 65536, 262154, 0, 196608, 262155, 0, 196608, 327682, 0, 65537, 327683, 0, 196610, 327684, 0, 65538, 327685, 0, 196610, 327686, 0, 65539, 327688, 0, 131073, 327689, 0, 196610, 327690, 0, 196608, 327691, 0, 196608, 393218, 0, 65536, 393220, 0, 65536, 393222, 0, 65536, 393226, 0, 131072, 458754, 0, 131073, 458755, 0, 196610, 458756, 0, 131074, 458757, 0, 196610, 458758, 0, 131075 )
-
-[node name="RocksBackup" type="TileMap" parent="YSort"]
-visible = false
-position = Vector2( 0, 16 )
-tile_set = SubResource( 16 )
-format = 1
-tile_data = PoolIntArray( 196615, 0, 0, 196616, 0, 0 )
-
-[node name="LizardAttackBack0000" type="Sprite" parent="YSort"]
-visible = false
-position = Vector2( 512, 286 )
-texture = ExtResource( 5 )
