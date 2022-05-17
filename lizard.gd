@@ -2,7 +2,7 @@ extends Node2D
 class_name Lizard
 
 
-export(float) var walk_duration := 0.5
+export(float) var walk_duration := 0.3
 
 var state: int = Enums.LIZARD_STATE.IDLE
 var direction := Vector2.RIGHT
@@ -49,7 +49,7 @@ func _update_debug_label() -> void:
 
 
 func _update_grid_position() -> void:
-	grid_position = position / Global.BLOCK_SIZE
+	grid_position = (position / Global.BLOCK_SIZE).round()
 
 
 func _check_for_state_change() -> void:
@@ -97,7 +97,8 @@ func _walk() -> void:
 		position, 
 		position + direction * Global.BLOCK_SIZE, 
 		walk_duration, 
-		Tween.TRANS_LINEAR,
+		#Tween.TRANS_LINEAR,
+		Tween.TRANS_SINE,
 		Tween.EASE_IN_OUT
 	)
 	walk_tween.start()

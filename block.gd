@@ -8,6 +8,8 @@ var number: int = 0
 var solid: bool = false
 var flagged: bool = false
 
+var cascade_dist := -1
+
 
 func _init(is_mine: bool, is_border: bool, number: int, solid: bool, flagged: bool) -> void:
 	self.is_mine = is_mine

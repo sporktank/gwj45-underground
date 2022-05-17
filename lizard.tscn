@@ -100,6 +100,7 @@ animation = "attack_up"
 centered = false
 
 [node name="Debug" type="Label" parent="."]
+visible = false
 margin_left = -32.0
 margin_top = -112.0
 margin_right = 96.0

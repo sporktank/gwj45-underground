@@ -6,12 +6,17 @@ export(int) var width := Global.MAP_WIDTH
 export(int) var num_sections := 10
 export(int) var section_height := 10
 export(float) var min_density := 0.1
-export(float) var max_density := 0.5
+export(float) var max_density := 0.4
 
 var height: int
 var block_map := []
 
-onready var debug_tilemap := $Debug
+onready var game_tilemap := $Game
+onready var floor_tilemap := $Floor
+onready var walls_tilemap := $Walls
+onready var roof_tilemap := $YSort/Roof
+onready var rocks_tilemap := $YSort/Rocks
+onready var all_tilemaps := [game_tilemap, floor_tilemap, walls_tilemap, roof_tilemap, rocks_tilemap]
 
 
 func _ready() -> void:
@@ -20,8 +25,13 @@ func _ready() -> void:
 	generate()
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.scancode == KEY_F1 and event.is_pressed() and not event.is_echo():
+		for tilemap in all_tilemaps:
+			tilemap.visible = not tilemap.visible
+
+
 func generate() -> void:
-	debug_tilemap.clear()
 	block_map.clear()
 	
 	height = section_height * num_sections
@@ -38,8 +48,8 @@ func generate() -> void:
 	for section in num_sections:
 		var current_density: float = lerp(min_density, max_density, float(section) / (num_sections-1))
 		
-		for y in section_height:
-			for x in width:
+		for y in range(1 if section == 0 else 0, section_height-1 if section == num_sections-1 else section_height):
+			for x in range(1, width-1):
 				block_map[x][y_offset + y].is_mine = randf() < current_density
 		
 		y_offset += section_height
@@ -65,28 +75,47 @@ func generate() -> void:
 
 
 func _update_tilemaps() -> void:
+	game_tilemap.clear()
+	floor_tilemap.clear()
+	walls_tilemap.clear()
+	roof_tilemap.clear()
+	rocks_tilemap.clear()
+	
 	for y in height:
 		for x in width:
 			_set_block(x, y, block_map[x][y])
+	
+	rocks_tilemap.update_bitmask_region()
 
 
 func _set_block(x: int, y: int, block: Block) -> void:
-	debug_tilemap.set_cell(x, y, _convert_block_to_tile_num(block))
+	game_tilemap.set_cell(x, y, _block_to_game_tile(block))
+	floor_tilemap.set_cell(x, y, _block_to_floor_tile(block))
+	walls_tilemap.set_cell(x, y, 0 if block.is_border else -1)
+	roof_tilemap.set_cell(x, y, 0 if block.is_border else -1)
+	rocks_tilemap.set_cell(x, y, 0 if not block.is_border and block.solid else -1)
 
 
-func _convert_block_to_tile_num(block: Block) -> int:
-#	if block.is_border:
-#		return 9
-#	elif block.is_mine:
-#		return 19
-#	else:
-#		return block.number + 10 * int(block.solid)
+func _block_to_floor_tile(block: Block) -> int:
+	if block.is_border or block.is_mine:
+		return 0
+	else:
+		return block.number
+
+
+func _block_to_game_tile(block: Block) -> int:
 	if block.is_border:
 		return 9
-	elif block.solid:
-		return 10
+	elif block.is_mine:
+		return 19
 	else:
 		return block.number + 10 * int(block.solid)
+#	if block.is_border:
+#		return 9
+#	elif block.solid:
+#		return 10
+#	else:
+#		return block.number + 10 * int(block.solid)
 
 
 func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
@@ -100,4 +129,34 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
 	
 	elif block.solid:
 		block.solid = false
+		if block.number == 0:
+			_cascade_zero_blocks(x, y)
+		
 		_update_tilemaps()  # TODO: This might be a slow down.
+
+
+func _cascade_zero_blocks(start_x: int, start_y: int) -> void:
+	var xs := [start_x]
+	var ys := [start_y]
+	
+	while xs:
+		var x := int(xs.pop_front())
+		var y := int(ys.pop_front())
+		
+		#for d in [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]:
+		#	var dx := int(d.x)
+		#	var dy := int(d.y)
+		for dy in range(-1, 2):
+			for dx in range(-1, 2):
+				if dx == 0 and dy == 0:
+					continue
+				
+				if x+dx < 0 or y+dy < 0 or x+dx >= width or y+dy >= height:
+					continue
+				
+				var block := (block_map[x+dx][y+dy] as Block)
+				if not block.is_border and block.solid:
+					block.solid = false
+					if block.number == 0:
+						xs.append(x+dx)
+						ys.append(y+dy)
