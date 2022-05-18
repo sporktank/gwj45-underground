@@ -539,14 +539,8 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 0/shape_offset = Vector2( 0, 0 )
 0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 0/shape_one_way = false
-0/shape_one_way_margin = 1.0
-0/shapes = [ {
-"autotile_coord": Vector2( 0, 0 ),
-"one_way": false,
-"one_way_margin": 1.0,
-"shape": null,
-"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
-} ]
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
 0/z_index = 0
 
 [sub_resource type="TileSet" id=15]
@@ -577,14 +571,8 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 0/shape_offset = Vector2( 0, 0 )
 0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 0/shape_one_way = false
-0/shape_one_way_margin = 1.0
-0/shapes = [ {
-"autotile_coord": Vector2( 0, 0 ),
-"one_way": false,
-"one_way_margin": 1.0,
-"shape": null,
-"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
-} ]
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
 0/z_index = 0
 
 [sub_resource type="TileSet" id=17]
@@ -595,7 +583,7 @@ points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
 0/region = Rect2( 0, 0, 768, 352 )
 0/tile_mode = 1
 0/autotile/bitmask_mode = 1
-0/autotile/bitmask_flags = [ Vector2( 0, 0 ), 144, Vector2( 0, 1 ), 146, Vector2( 0, 2 ), 18, Vector2( 0, 3 ), 16, Vector2( 1, 0 ), 176, Vector2( 1, 1 ), 178, Vector2( 1, 2 ), 50, Vector2( 1, 3 ), 48, Vector2( 2, 0 ), 184, Vector2( 2, 1 ), 186, Vector2( 2, 2 ), 58, Vector2( 2, 3 ), 56, Vector2( 3, 0 ), 152, Vector2( 3, 1 ), 154, Vector2( 3, 2 ), 26, Vector2( 3, 3 ), 24 ]
+0/autotile/bitmask_flags = [ Vector2( 0, 0 ), 144, Vector2( 0, 1 ), 146, Vector2( 0, 2 ), 18, Vector2( 0, 3 ), 16, Vector2( 1, 0 ), 176, Vector2( 1, 1 ), 178, Vector2( 1, 2 ), 50, Vector2( 1, 3 ), 48, Vector2( 2, 0 ), 184, Vector2( 2, 1 ), 186, Vector2( 2, 2 ), 58, Vector2( 2, 3 ), 56, Vector2( 3, 0 ), 152, Vector2( 3, 1 ), 154, Vector2( 3, 2 ), 26, Vector2( 3, 3 ), 24, Vector2( 4, 0 ), 187, Vector2( 4, 1 ), 434, Vector2( 4, 2 ), 182, Vector2( 4, 3 ), 250, Vector2( 5, 0 ), 440, Vector2( 5, 1 ), 510, Vector2( 5, 2 ), 447, Vector2( 5, 3 ), 62, Vector2( 6, 0 ), 248, Vector2( 6, 1 ), 507, Vector2( 6, 2 ), 255, Vector2( 6, 3 ), 59, Vector2( 7, 0 ), 190, Vector2( 7, 1 ), 218, Vector2( 7, 2 ), 155, Vector2( 7, 3 ), 442, Vector2( 8, 0 ), 432, Vector2( 8, 1 ), 438, Vector2( 8, 2 ), 446, Vector2( 8, 3 ), 54, Vector2( 9, 0 ), 506, Vector2( 9, 1 ), 254, Vector2( 9, 2 ), 511, Vector2( 9, 3 ), 63, Vector2( 10, 0 ), 504, Vector2( 10, 2 ), 443, Vector2( 10, 3 ), 191, Vector2( 11, 0 ), 216, Vector2( 11, 1 ), 251, Vector2( 11, 2 ), 219, Vector2( 11, 3 ), 27 ]
 0/autotile/icon_coordinate = Vector2( 0, 3 )
 0/autotile/tile_size = Vector2( 64, 88 )
 0/autotile/spacing = 0
@@ -617,6 +605,7 @@ script = ExtResource( 1 )
 
 [node name="Game" type="TileMap" parent="."]
 visible = false
+modulate = Color( 1, 1, 1, 0.501961 )
 z_index = 1
 z_as_relative = false
 tile_set = SubResource( 1 )
@@ -656,4 +645,4 @@ tile_data = PoolIntArray( 196612, 0, 0, 262148, 0, 0, 262151, 0, 0, 655365, 0, 0
 position = Vector2( 0, 24 )
 tile_set = SubResource( 17 )
 format = 1
-tile_data = PoolIntArray( 131080, 0, 0, 131085, 0, 196608, 196610, 0, 1, 196611, 0, 196610, 196612, 0, 2, 196613, 0, 196610, 196614, 0, 3, 196616, 0, 65536, 262146, 0, 65536, 262148, 0, 65536, 262150, 0, 65536, 262152, 0, 65536, 262154, 0, 196608, 262155, 0, 196608, 327682, 0, 65537, 327683, 0, 196610, 327684, 0, 65538, 327685, 0, 196610, 327686, 0, 65539, 327688, 0, 131073, 327689, 0, 196610, 327690, 0, 196608, 327691, 0, 196608, 393218, 0, 65536, 393220, 0, 65536, 393222, 0, 65536, 393226, 0, 131072, 458754, 0, 131073, 458755, 0, 196610, 458756, 0, 131074, 458757, 0, 196610, 458758, 0, 131075 )
+tile_data = PoolIntArray( 262152, 0, 1, 262153, 0, 196610, 262154, 0, 3, 327688, 0, 65536, 327690, 0, 65536, 393220, 0, 196609, 393221, 0, 196610, 393222, 0, 3, 393224, 0, 65540, 393225, 0, 10, 393226, 0, 65543, 458758, 0, 131073, 458759, 0, 196610, 458760, 0, 196613, 458761, 0, 131077, 458762, 0, 131083, 524288, 0, 0, 524290, 0, 8, 524291, 0, 11, 524297, 0, 131076, 524298, 0, 196619, 589824, 0, 65536, 589826, 0, 131076, 589827, 0, 196614, 589828, 0, 196610, 589829, 0, 196610, 589830, 0, 196610, 589831, 0, 196610, 589832, 0, 196610, 589833, 0, 131075, 655360, 0, 131073, 655361, 0, 196610, 655362, 0, 131075 )

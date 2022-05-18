@@ -4,9 +4,8 @@ class_name Lizard
 
 export(float) var walk_duration := 0.3
 
-var state: int = Enums.LIZARD_STATE.IDLE
+export(Enums.LIZARD_STATE) var state: int = Enums.LIZARD_STATE.IDLE
 var direction := Vector2.RIGHT
-var input_dir := Vector2.ZERO
 var grid_position := Vector2.ZERO
 var selector_grid_position: Vector2
 var attack_position: Vector2
@@ -29,20 +28,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	
-	var previous_state := state
-	var next_state: int = Enums.LIZARD_STATE.INVALID
-	
-	input_dir = Vector2(
-		Input.get_action_strength("right") - Input.get_action_strength("left"),
-		Input.get_action_strength("down") - Input.get_action_strength("up")
-	)#.clamped(1.0)
-	
 	if state == Enums.LIZARD_STATE.IDLE: 
 		_check_for_state_change()
 	
 	_update_selector()
-	
 	_update_debug_label()
 
 
@@ -67,6 +56,10 @@ func _update_grid_position() -> void:
 
 
 func _check_for_state_change() -> void:
+	var input_dir = Vector2(
+		Input.get_action_strength("right") - Input.get_action_strength("left"),
+		Input.get_action_strength("down") - Input.get_action_strength("up")
+	)
 	
 	if input_dir.x < 0:
 		direction = Vector2.LEFT
@@ -133,8 +126,8 @@ func _walk() -> void:
 		position, 
 		position + direction * Global.BLOCK_SIZE, 
 		walk_duration, 
-		#Tween.TRANS_LINEAR,
-		Tween.TRANS_SINE,
+		Tween.TRANS_LINEAR,
+		#Tween.TRANS_SINE,
 		Tween.EASE_IN_OUT
 	)
 	walk_tween.start()

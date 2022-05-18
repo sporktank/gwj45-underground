@@ -23,11 +23,23 @@ _global_script_classes=[ {
 "class": "Mine",
 "language": "GDScript",
 "path": "res://mine.gd"
+}, {
+"base": "Node2D",
+"class": "Snake",
+"language": "GDScript",
+"path": "res://snake.gd"
+}, {
+"base": "Node2D",
+"class": "SnakePiece",
+"language": "GDScript",
+"path": "res://snake_piece.gd"
 } ]
 _global_script_class_icons={
 "Block": "",
 "Lizard": "",
-"Mine": ""
+"Mine": "",
+"Snake": "",
+"SnakePiece": ""
 }
 
 [application]

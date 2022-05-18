@@ -60,7 +60,7 @@ func generate() -> void:
 	# Enforce some structure.
 	block_map[7][0].is_border = false
 	block_map[7][0].is_mine = false
-	block_map[7][0].solid = false ; block_map[7][1].solid = false
+	block_map[7][0].solid = false #; block_map[7][1].solid = false
 	block_map[6][1].is_mine = false ; block_map[7][1].is_mine = false ; block_map[8][1].is_mine = false
 	block_map[6][2].is_mine = false ; block_map[7][2].is_mine = false ; block_map[8][2].is_mine = false
 	block_map[6][3].is_mine = false ; block_map[7][3].is_mine = false ; block_map[8][3].is_mine = false
@@ -130,7 +130,7 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
 		return
 	
 	if block.is_mine:
-		print("BOOM!!")
+		Events.emit_signal("lizard_died", lizard)
 	
 	elif block.solid:
 		block.solid = false

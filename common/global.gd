@@ -9,6 +9,10 @@ const MAP_WIDTH := 15
 var splash_shown = false
 
 
+func _ready() -> void:
+	VisualServer.set_default_clear_color(Color.black)
+
+
 func _input(event):  # TODO: Make this unhandled?
 	if event is InputEventKey and event.scancode == KEY_ESCAPE: get_tree().quit()
 	if event is InputEventKey and event.is_pressed() and event.scancode == KEY_R: get_tree().reload_current_scene()
