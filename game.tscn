@@ -8,6 +8,17 @@
 [node name="Game" type="Node2D"]
 script = ExtResource( 3 )
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+margin_right = 111.0
+margin_bottom = 31.0
+text = "F1 = debug mode
+R = restart"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Mine" parent="." instance=ExtResource( 2 )]
 
 [node name="Lizard" parent="." instance=ExtResource( 1 )]
