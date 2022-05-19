@@ -3,6 +3,12 @@ class_name Lizard
 
 
 export(float) var walk_duration := 0.3
+export(bool) var can_mine_self := true
+export(int) var max_mine_distance := 2
+export(int) var max_mine_distance_diag := 1
+export(bool) var automine_zero_blocks := true
+export(bool) var automine_zero_block_neighbours := true
+export(bool) var can_double_mine := false
 
 export(Enums.LIZARD_STATE) var state: int = Enums.LIZARD_STATE.IDLE
 var direction := Vector2.RIGHT
@@ -17,11 +23,11 @@ onready var raycast_left := $RayCasts/Left
 onready var raycast_right := $RayCasts/Right
 onready var raycast_up := $RayCasts/Up
 onready var raycast_down := $RayCasts/Down
-onready var selector := $Selector
+onready var selector_pivot := $SelectorPivot
 
 
 func _ready() -> void:
-	selector.set_as_toplevel(true)
+	selector_pivot.set_as_toplevel(true)
 	
 	_update_grid_position()
 	_update_anim()
@@ -45,10 +51,25 @@ func _update_debug_label() -> void:
 
 
 func _update_selector() -> void:
-	selector.global_position = ((get_global_mouse_position() - Vector2(32, 48)) / Global.BLOCK_SIZE).round() * Global.BLOCK_SIZE + Vector2(0, 16) + Vector2(32, 32)
-	selector_grid_position = ((selector.position - Vector2(0, 16) - Vector2(32, 32)) / Global.BLOCK_SIZE).round()
-	var dist := grid_position.distance_to(selector_grid_position)
-	selector.visible = state != Enums.LIZARD_STATE.DEAD and 0 < dist and dist <= 1.5
+	selector_pivot.global_position = ((get_global_mouse_position() - Vector2(32, 48)) / Global.BLOCK_SIZE).round() * Global.BLOCK_SIZE + Vector2(0, 16) + Vector2(32, 32)
+	selector_grid_position = ((selector_pivot.position - Vector2(0, 16) - Vector2(32, 32)) / Global.BLOCK_SIZE).round()
+	
+	var diff := (grid_position - selector_grid_position).abs()
+	var dist: int = int(diff.x + diff.y)
+	var dist_diag: int = int(max(diff.x, diff.y))
+	
+#	if can_mine_self and dist == 0:
+#		selector_pivot.scale = 2.0 * Vector2.ONE
+#	else:
+#		selector_pivot.scale = Vector2.ONE
+	
+	if dist <= max_mine_distance and dist_diag <= max_mine_distance_diag and not state == Enums.LIZARD_STATE.DEAD:
+		if dist == 0 and not can_mine_self:
+			selector_pivot.visible = false
+		else:
+			selector_pivot.visible = true
+	else:
+		selector_pivot.visible = false
 
 
 func _update_grid_position() -> void:
@@ -90,7 +111,7 @@ func _check_for_state_change() -> void:
 		_attack()
 		return
 	if Input.is_action_just_pressed("mouse_attack"):
-		if selector.visible:
+		if selector_pivot.visible:
 			direction = (selector_grid_position - grid_position)
 			if direction.length() > 1:
 				direction.y = 0.0
@@ -103,7 +124,7 @@ func _check_for_state_change() -> void:
 		_flag()
 		return
 	if Input.is_action_just_pressed("mouse_flag"):
-		if selector.visible:
+		if selector_pivot.visible:
 			direction = (selector_grid_position - grid_position)
 			if direction.length() > 1:
 				direction.y = 0.0
@@ -166,6 +187,9 @@ func _update_anim() -> void:
 		anim_string += "up"
 	
 	elif direction == Vector2.DOWN: 
+		anim_string += "down"
+	
+	else:
 		anim_string += "down"
 	
 	anim.play(anim_string)

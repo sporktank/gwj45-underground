@@ -7,6 +7,7 @@ var is_border: bool = false
 var number: int = 0
 var solid: bool = false
 var flagged: bool = false
+var loot_value: int = Enums.LOOT.NOTHING
 
 var cascade_dist := -1
 

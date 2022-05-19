@@ -2,9 +2,9 @@ extends Camera2D
 
 
 export(float) var goal_y := 0.0
-export(float) var soft_limit := 64.0
-export(float) var hard_limit := 96.0
-export(float) var speed := 64/0.3
+export(float) var soft_limit := 32.0
+export(float) var hard_limit := 128.0
+export(float) var speed := 64/0.3 #* 2
 
 var _goal_velocity := 0.0
 var _velocity := 0.0

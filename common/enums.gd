@@ -21,3 +21,11 @@ enum SNAKE_STATE {
 	MOVING = 1,
 	DEAD = 2,
 }
+
+enum LOOT {
+	NOTHING = 0,
+	TREASURE_1 = 1,
+	TREASURE_2 = 2,
+	TREASURE_3 = 3,
+	TREASURE_4 = 4,
+}

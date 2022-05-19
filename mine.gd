@@ -13,11 +13,12 @@ var block_map := []
 
 onready var game_tilemap := $Game
 onready var floor_tilemap := $Floor
+onready var loot_tilemap := $Loot
 onready var walls_tilemap := $Walls
 onready var roof_tilemap := $YSort/Roof
 onready var flags_tilemap := $YSort/Flags
 onready var rocks_tilemap := $YSort/Rocks
-onready var all_tilemaps := [game_tilemap, floor_tilemap, walls_tilemap, roof_tilemap, flags_tilemap, rocks_tilemap]
+onready var all_tilemaps := [game_tilemap, floor_tilemap, loot_tilemap, walls_tilemap, roof_tilemap, flags_tilemap, rocks_tilemap]
 
 
 func _ready() -> void:
@@ -75,6 +76,17 @@ func generate() -> void:
 						if dx != 0 or dy != 0:
 							block_map[x+dx][y+dy].number += 1
 	
+	# Add loot.
+	for x in width:
+		for y in range(1, height):
+			var block := (block_map[x][y] as Block)
+			if not block.is_border and not block.is_mine and block.number == 0:
+				var r := randf()
+				if r < 0.01: block.loot_value = Enums.LOOT.TREASURE_4
+				elif r < 0.03: block.loot_value = Enums.LOOT.TREASURE_3
+				elif r < 0.07: block.loot_value = Enums.LOOT.TREASURE_2
+				elif r < 0.15: block.loot_value = Enums.LOOT.TREASURE_1
+	
 	_update_tilemaps()
 
 
@@ -93,6 +105,7 @@ func _set_block(x: int, y: int, block: Block) -> void:
 	game_tilemap.set_cell(x, y, _block_to_game_tile(block))
 	floor_tilemap.set_cell(x, y, _block_to_floor_tile(block))
 	walls_tilemap.set_cell(x, y, 0 if block.is_border else -1)
+	loot_tilemap.set_cell(x, y, block.loot_value - 1)
 	roof_tilemap.set_cell(x, y, 0 if block.is_border else -1)
 	rocks_tilemap.set_cell(x, y, 0 if not block.is_border and block.solid else -1)
 	flags_tilemap.set_cell(x, y, 0 if block.flagged else -1)
@@ -122,7 +135,7 @@ func _block_to_game_tile(block: Block) -> int:
 #		return block.number + 10 * int(block.solid)
 
 
-func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
+func _on_lizard_attacked(lizard: Lizard, x: int, y: int, recurse := true) -> void:
 	if x < 0 or y < 0 or x >= width or y >= height:
 		return
 	
@@ -136,12 +149,35 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int) -> void:
 	elif block.solid:
 		block.solid = false
 		if block.number == 0:
-			_cascade_zero_blocks(x, y)
+			if lizard.automine_zero_blocks:
+				_cascade_zero_blocks(x, y, lizard.automine_zero_block_neighbours)
 		
-		_update_tilemaps()  # TODO: This might be a slow down.
+		_update_tilemaps()
+	
+	elif recurse:
+		if _count_neighbour_flags(x, y) == block.number:
+			for dy in range(-1, 2):
+				for dx in range(-1, 2):
+					if dx == 0 and dy == 0:
+						continue
+					
+					_on_lizard_attacked(lizard, x+dx, y+dy, false)
 
 
-func _cascade_zero_blocks(start_x: int, start_y: int) -> void:
+func _count_neighbour_flags(x: int, y: int) -> int:
+	var count := 0
+	
+	for dy in range(-1, 2):
+		for dx in range(-1, 2):
+			if dx == 0 and dy == 0:
+				continue
+			
+			count += int(block_map[x+dx][y+dy].flagged)
+	
+	return count
+
+
+func _cascade_zero_blocks(start_x: int, start_y: int, mine_all_numbers: bool) -> void:
 	var xs := [start_x]
 	var ys := [start_y]
 	
@@ -162,7 +198,8 @@ func _cascade_zero_blocks(start_x: int, start_y: int) -> void:
 				
 				var block := (block_map[x+dx][y+dy] as Block)
 				if not block.is_border and block.solid and not block.flagged:
-					block.solid = false
+					if block.number == 0 or mine_all_numbers:
+						block.solid = false
 					if block.number == 0:
 						xs.append(x+dx)
 						ys.append(y+dy)
