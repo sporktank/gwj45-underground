@@ -1,4 +1,4 @@
-extends Node2D
+extends YSort
 class_name Snake
 
 
@@ -11,6 +11,8 @@ var next_direction := Vector2.DOWN
 
 var head: SnakePiece = null
 var tail: SnakePiece = null
+
+var _grow_amount := 0
 
 onready var move_tween := $MoveTween
 onready var pieces := $Pieces
@@ -56,7 +58,8 @@ func _process(delta: float) -> void:
 				if _check_for_death(next_direction):
 					state = Enums.SNAKE_STATE.DEAD
 				else:
-					_move(next_direction)
+					_move(next_direction, _grow_amount > 0)
+					if _grow_amount > 0: _grow_amount -= 1
 
 
 func _check_for_death(new_direction: Vector2) -> bool:
@@ -89,6 +92,10 @@ func init_snake(position: Vector2, start_direction: Vector2, length: int) -> voi
 	tail.collision_shape.disabled = true
 
 
+func grow(amount: int) -> void:
+	_grow_amount += amount
+
+
 func _move(new_direction: Vector2, grow_tail := false) -> void:
 	if is_moving:
 		return
@@ -114,6 +121,10 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 	
 	move_tween.start()
 	yield(move_tween, "tween_all_completed")
+	
+	# TODO: Probably should centralise this kind of logic somewhere.
+	var grid_position = ((head.global_position - Vector2(0, 64)) / Global.BLOCK_SIZE).round()
+	Events.emit_signal("snake_swallowed", self, int(grid_position.x), int(grid_position.y))
 	
 	if grow_tail:
 		pass # Nothing to do?

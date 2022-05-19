@@ -48,7 +48,7 @@ func _update_selector() -> void:
 	selector.global_position = ((get_global_mouse_position() - Vector2(32, 48)) / Global.BLOCK_SIZE).round() * Global.BLOCK_SIZE + Vector2(0, 16) + Vector2(32, 32)
 	selector_grid_position = ((selector.position - Vector2(0, 16) - Vector2(32, 32)) / Global.BLOCK_SIZE).round()
 	var dist := grid_position.distance_to(selector_grid_position)
-	selector.visible = 0 < dist and dist <= 1.5
+	selector.visible = state != Enums.LIZARD_STATE.DEAD and 0 < dist and dist <= 1.5
 
 
 func _update_grid_position() -> void:

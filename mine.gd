@@ -23,6 +23,7 @@ onready var all_tilemaps := [game_tilemap, floor_tilemap, walls_tilemap, roof_ti
 func _ready() -> void:
 	Events.connect("lizard_attacked", self, "_on_lizard_attacked")
 	Events.connect("lizard_flagged", self, "_on_lizard_flagged")
+	Events.connect("snake_swallowed", self, "_on_snake_swallowed")
 	
 	randomize()
 	generate()
@@ -177,3 +178,14 @@ func _on_lizard_flagged(lizard: Lizard, x: int, y: int) -> void:
 	
 	block.flagged = not block.flagged
 	_update_tilemaps()
+
+
+func _on_snake_swallowed(snake: Snake, x: int, y: int) -> void:
+	if x < 0 or y < 0 or x >= width or y >= height:
+		return
+	
+	var block := (block_map[x][y] as Block)
+	if not block.is_border and not block.solid and not block.flagged and block.number > 0:
+		snake.grow(block.number)
+		block.number = 0
+		_update_tilemaps()
