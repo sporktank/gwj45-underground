@@ -4,6 +4,7 @@ extends Node
 enum GAME_STATE {
 	MINESWEEPER = 1,
 	SNAKE = 2,
+	CUTSCENE = 3,
 }
 
 enum LIZARD_STATE {

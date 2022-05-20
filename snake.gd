@@ -105,6 +105,7 @@ func init_snake(position: Vector2, start_direction: Vector2, length: int) -> voi
 	head = pieces.get_child(0)
 	tail = pieces.get_child(length - 1)
 	tail.collision_shape.disabled = true
+	tail.prev_piece.collision_shape.disabled = true
 	
 	head_center_position = head.center.global_position
 
@@ -156,5 +157,6 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 		pieces.remove_child(old_tail)
 		old_tail.queue_free()
 		tail.collision_shape.disabled = true
+		tail.prev_piece.collision_shape.disabled = true
 	
 	is_moving = false

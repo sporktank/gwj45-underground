@@ -53,6 +53,11 @@ func _update_debug_label() -> void:
 		grid_position, selector_grid_position
 	]
 
+func die() -> void:
+	state = Enums.LIZARD_STATE.DEAD
+	yield(get_tree().create_timer(1.0), "timeout")
+	_update_anim()
+
 
 func _update_selector() -> void:
 	selector_pivot.global_position = ((get_global_mouse_position() - Vector2(32, 48)) / Global.BLOCK_SIZE).round() * Global.BLOCK_SIZE + Vector2(0, 16) + Vector2(32, 32)
@@ -78,6 +83,7 @@ func _update_selector() -> void:
 
 func _update_grid_position() -> void:
 	grid_position = ((position - Vector2(0, 64)) / Global.BLOCK_SIZE).round()
+	Events.emit_signal("lizard_moved", self, int(grid_position.x), int(grid_position.y))
 
 
 func _check_for_state_change() -> void:
@@ -209,6 +215,9 @@ func _update_anim() -> void:
 	else:
 		anim_string += "down"
 	
+	if state == Enums.LIZARD_STATE.DEAD:
+		anim_string = "die"
+	
 	anim.play(anim_string)
 
 
@@ -220,7 +229,7 @@ func _on_AnimatedSprite_animation_finished() -> void:
 
 func _on_AnimatedSprite_frame_changed() -> void:
 	
-	if state == Enums.LIZARD_STATE.ATTACK and anim.frame == 2: # ?!?!
+	if state == Enums.LIZARD_STATE.ATTACK and anim.frame == 4: # ?!?!
 		Events.emit_signal("lizard_attacked", self, int(attack_position.x), int(attack_position.y))
 	
 	if state == Enums.LIZARD_STATE.FLAG and anim.frame == 2: # ?!?!
