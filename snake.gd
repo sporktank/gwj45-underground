@@ -3,6 +3,7 @@ class_name Snake
 
 
 export(float) var move_duration := 0.3
+export(bool) var buffer_inputs := true
 
 export(Enums.SNAKE_STATE) var state: int = Enums.SNAKE_STATE.INACTIVE
 var is_moving := false
@@ -26,7 +27,7 @@ onready var raycast_down := $RayCasts/Down
 
 
 #func _ready() -> void:
-#	init_snake(Vector2.ZERO, Vector2.DOWN, 5)
+#	init_snake(Vector2.ZERO, Vector2.DOWN, 45)
 #	state = Enums.SNAKE_STATE.STILL
 
 
