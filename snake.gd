@@ -8,7 +8,8 @@ export(bool) var buffer_inputs := true
 export(Enums.SNAKE_STATE) var state: int = Enums.SNAKE_STATE.INACTIVE
 var is_moving := false
 var direction := Vector2.DOWN
-var next_direction := Vector2.DOWN
+#var next_direction := Vector2.DOWN
+var next_directions := []  # [Vector2]
 
 var head_center_position: Vector2
 
@@ -48,22 +49,32 @@ func _process(delta: float) -> void:
 				_move(Vector2.RIGHT)
 		
 		Enums.SNAKE_STATE.MOVING:
-			if is_moving:
-				if Input.is_action_pressed("up") and direction != Vector2.DOWN:
-					next_direction = Vector2.UP
-				elif Input.is_action_pressed("down") and direction != Vector2.UP:
-					next_direction = Vector2.DOWN
-				elif Input.is_action_pressed("left") and direction != Vector2.RIGHT:
-					next_direction = Vector2.LEFT
-				elif Input.is_action_pressed("right") and direction != Vector2.LEFT:
-					next_direction = Vector2.RIGHT
+			#if is_moving:
+			if Input.is_action_just_pressed("up"):# and direction != Vector2.DOWN:
+				next_directions.append(Vector2.UP)
+			if Input.is_action_just_pressed("down"):# and direction != Vector2.UP:
+				next_directions.append(Vector2.DOWN)
+			if Input.is_action_just_pressed("left"):# and direction != Vector2.RIGHT:
+				next_directions.append(Vector2.LEFT)
+			if Input.is_action_just_pressed("right"):# and direction != Vector2.LEFT:
+				next_directions.append(Vector2.RIGHT)
 			
-			else:
-				if _check_for_death(next_direction):
+			if not is_moving:
+				#var next: Vector2 = direction if not next_directions else next_directions.pop_front()
+				var next: Vector2 = direction
+				while next_directions:
+					var cand := next_directions.pop_front() as Vector2
+					if cand != direction and cand != -direction:
+						next = cand
+						break
+				
+				if _check_for_death(next):
 					state = Enums.SNAKE_STATE.DEAD
+					
 				else:
-					_move(next_direction, _grow_amount > 0)
-					if _grow_amount > 0: _grow_amount -= 1
+					_move(next, _grow_amount > 0)
+					if _grow_amount > 0: 
+						_grow_amount -= 1
 
 
 func _check_for_death(new_direction: Vector2) -> bool:
@@ -109,7 +120,7 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 	is_moving = true
 	state = Enums.SNAKE_STATE.MOVING
 	direction = new_direction
-	next_direction = new_direction
+	#next_direction = Vector2.ZERO #new_direction
 	
 	var new_head := Scenes.SNAKE_PIECE.instance() as SnakePiece
 	new_head.position = head.position + direction * Global.BLOCK_SIZE

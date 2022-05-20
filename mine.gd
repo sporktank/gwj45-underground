@@ -84,10 +84,10 @@ func generate() -> void:
 		
 		var s := float(section) / float(num_sections - 1)
 		
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(5, 0, s) + int(rand_range(-1, 1)))
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(2, 1, s) + int(rand_range(-1, 1)))
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-1, 3, s) + int(rand_range(-1, 1)))
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_4, lerp(-3, 5, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-3, 5, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(-1, 3, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(4, 1, s) + int(rand_range(-1, 1)))
+		#_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(5, 0, s) + int(rand_range(-1, 1)))
 	
 	_update_tilemaps()
 

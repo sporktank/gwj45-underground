@@ -149,9 +149,7 @@ func _idle() -> void:
 
 
 func _walk() -> void:
-	fade_timer.stop()
-	fade_tween.stop_all()
-	modulate.a = 1.0
+	_stop_fade()
 	walk_tween.interpolate_property(
 		self, 
 		"position", 
@@ -168,13 +166,21 @@ func _walk() -> void:
 
 
 func _attack() -> void:
+	_stop_fade()
 	state = Enums.LIZARD_STATE.ATTACK
 	_update_anim()
 
 
 func _flag() -> void:
+	_stop_fade()
 	state = Enums.LIZARD_STATE.FLAG
 	_update_anim()
+
+
+func _stop_fade() -> void:
+	fade_timer.stop()
+	fade_tween.stop_all()
+	modulate.a = 1.0
 
 
 func _update_anim() -> void:
@@ -184,7 +190,7 @@ func _update_anim() -> void:
 		Enums.LIZARD_STATE.IDLE: anim_string = "idle_"
 		Enums.LIZARD_STATE.WALK: anim_string = "walk_"
 		Enums.LIZARD_STATE.ATTACK: anim_string = "attack_"
-		Enums.LIZARD_STATE.FLAG: anim_string = "attack_"  # NOTE: Re-using animation.
+		Enums.LIZARD_STATE.FLAG: anim_string = "flag_"
 	
 	if direction == Vector2.LEFT: 
 		anim_string += "left"
