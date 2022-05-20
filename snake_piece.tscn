@@ -925,7 +925,7 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 32, -32 )
 frames = SubResource( 2 )
-animation = "body_down_tail_left"
+animation = "_empty"
 
 [node name="Debug" type="Label" parent="."]
 visible = false

@@ -21,7 +21,8 @@ visible = false
 position = Vector2( 448, 64 )
 
 [node name="Snake" parent="." instance=ExtResource( 4 )]
-position = Vector2( 448, -896 )
+visible = false
+position = Vector2( 448, 0 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 480, 32 )
