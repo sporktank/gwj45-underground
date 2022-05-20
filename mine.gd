@@ -3,10 +3,10 @@ class_name Mine
 
 
 export(int) var width := Global.MAP_WIDTH
-export(int) var num_sections := 10
+export(int) var num_sections := 15
 export(int) var section_height := 10
-export(float) var min_density := 0.1
-export(float) var max_density := 0.4
+export(float) var min_density := 0.12
+export(float) var max_density := 0.37
 
 var height: int
 var block_map := []
@@ -46,12 +46,13 @@ func generate() -> void:
 		for y in height:
 			var border: bool = (x == 0) or (y == 0) or (x == width-1) or y == (height-1)
 			column.append(Block.new(false, border, 0, true, false))
+			#column.append(Block.new(false, border, 0, false, false))
 		block_map.append(column)
 	
 	# Place sections, and mines in those sections.
 	var y_offset := 0
 	for section in num_sections:
-		var current_density: float = lerp(min_density, max_density, float(section) / (num_sections-1))
+		var current_density: float = lerp(min_density, max_density, pow(float(section) / (num_sections-1), 1.5))
 		
 		for y in range(1 if section == 0 else 0, section_height-1 if section == num_sections-1 else section_height):
 			for x in range(1, width-1):
@@ -77,17 +78,38 @@ func generate() -> void:
 							block_map[x+dx][y+dy].number += 1
 	
 	# Add loot.
-	for x in width:
-		for y in range(1, height):
-			var block := (block_map[x][y] as Block)
-			if not block.is_border and not block.is_mine and block.number == 0:
-				var r := randf()
-				if r < 0.01: block.loot_value = Enums.LOOT.TREASURE_4
-				elif r < 0.03: block.loot_value = Enums.LOOT.TREASURE_3
-				elif r < 0.07: block.loot_value = Enums.LOOT.TREASURE_2
-				elif r < 0.15: block.loot_value = Enums.LOOT.TREASURE_1
+	for section in num_sections:
+		var y0 := int(max(1, section * section_height))
+		var y1 := int((section + 1) * section_height)
+		
+		var s := float(section) / float(num_sections - 1)
+		
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(5, 0, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(2, 1, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-1, 3, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_4, lerp(-3, 5, s) + int(rand_range(-1, 1)))
 	
 	_update_tilemaps()
+
+
+func _place_treasure_in_range(y0: int, y1: int, value: int, amount: int) -> void:
+	if amount <= 0:
+		return
+	
+	var cands := []
+	for x in width:
+		for y in range(y0, y1):
+			var block := (block_map[x][y] as Block)
+			if not block.is_border and not block.is_mine and block.number == 0 and block.loot_value == Enums.LOOT.NOTHING:
+				cands.append(block)
+	
+	cands.shuffle()
+	for i in amount:
+		if not cands:
+			return
+		
+		var block := (cands.pop_front() as Block)
+		block.loot_value = value
 
 
 func _update_tilemaps() -> void:

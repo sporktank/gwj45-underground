@@ -14,7 +14,10 @@ func _ready() -> void:
 	remove_child(lizard) ; $Mine/YSort.add_child(lizard)
 	remove_child(snake) ; $Mine/YSort.add_child(snake)
 	snake.init_snake(Vector2.ZERO, Vector2.DOWN, 3)
-
+	#camera.goal_y = lizard.global_position.y - Global.BLOCK_SIZE/2
+	camera.goal_y = snake.head_center_position.y
+	camera.global_position.y = camera.goal_y
+	
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.scancode == KEY_F2 and event.is_pressed() and not event.is_echo():
@@ -31,7 +34,8 @@ func _update_camera() -> void:
 			camera.goal_y = lizard.global_position.y - Global.BLOCK_SIZE/2
 		
 		Enums.GAME_STATE.SNAKE:
-			camera.goal_y = snake.head.global_position.y - Global.BLOCK_SIZE/2
+			#camera.goal_y = snake.head.global_position.y - Global.BLOCK_SIZE/2
+			camera.goal_y = snake.head_center_position.y
 
 
 func _change_to_snake_game() -> void:

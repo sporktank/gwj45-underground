@@ -4,11 +4,20 @@ class_name SnakePiece
 
 const NUM_FRAMES := 4
 
+var frac_frame := 0.0 setget _set_frac_frame
+
 var prev_piece: SnakePiece = null
 var next_piece: SnakePiece = null
 
 onready var anim := $AnimatedSprite
 onready var collision_shape = $StaticBody2D/CollisionShape2D
+onready var center := $Center
+onready var debug_label := $Debug
+
+
+func _process(delta: float) -> void:
+	debug_label.text = "frac_frame=%s\nframe=%s" % [
+		frac_frame, anim.frame]
 
 
 func is_head() -> bool:
@@ -39,26 +48,31 @@ func animate_move(tween: Tween, grow_tail := false, duration := 0.3) -> void:
 	var from_dir := _vec2_to_dir(from_vec2)
 	var to_dir := _vec2_to_dir(to_vec2)
 	
-	# TODO: Handle length < 3.
-	var anim_name := "empty"
+	var anim_name: String
 	
 	if is_head():
 		anim_name = "head_%s" % [from_dir]
 	
 	elif prev_piece.is_head():
-		anim_name = "head_%s_body_%s" % [from_dir, to_dir]
+		anim_name = "head_%s_body_%s" % [to_dir, from_dir]
 	
 	elif is_tail():
 		anim_name = "tail_%s" % [to_dir]
 	
 	elif next_piece.is_tail() and not grow_tail:
-		anim_name = "body_%s_tail_%s" % [from_dir, to_dir]
+		anim_name = "body_%s_tail_%s" % [to_dir, from_dir]
 	
 	else:
-		anim_name = "body_%s_body_%s" % [from_dir, to_dir]
+		anim_name = "body_%s_body_%s" % [to_dir, from_dir]
 	
-	anim.animation = anim_name if anim_name in anim.frames.get_animation_names() else "empty"
-	tween.interpolate_property(anim, "frame", 0, NUM_FRAMES - 1, duration)
+	anim.animation = anim_name if anim_name in anim.frames.get_animation_names() else "_empty"
+	#tween.interpolate_property(anim, "frame", 0, NUM_FRAMES - 1, duration)
+	tween.interpolate_property(self, "frac_frame", 0, NUM_FRAMES, duration)
+
+
+func _set_frac_frame(value: float) -> void:
+	frac_frame = value
+	anim.frame = int(clamp(floor(value), 0, NUM_FRAMES - 1))
 
 
 func init_piece(direction: Vector2) -> void:

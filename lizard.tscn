@@ -125,6 +125,12 @@ tracks/0/keys = {
 [node name="Lizard" type="Area2D"]
 script = ExtResource( 28 )
 
+[node name="FadeTween" type="Tween" parent="."]
+
+[node name="FadeTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
 [node name="WalkTween" type="Tween" parent="."]
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -181,6 +187,7 @@ playback_speed = 5.0
 anims/RESET = SubResource( 3 )
 anims/pulse = SubResource( 4 )
 
+[connection signal="timeout" from="FadeTimer" to="." method="_on_FadeTimer_timeout"]
 [connection signal="tween_all_completed" from="WalkTween" to="." method="_on_WalkTween_tween_all_completed"]
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
 [connection signal="frame_changed" from="AnimatedSprite" to="." method="_on_AnimatedSprite_frame_changed"]

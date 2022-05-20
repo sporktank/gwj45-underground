@@ -11,6 +11,8 @@ var _velocity := 0.0
 
 
 func _process(delta: float) -> void:
+	global_position.y = lerp(global_position.y, goal_y, 0.9) ; return
+	
 	var diff := goal_y - global_position.y
 	
 	if abs(diff) > hard_limit:

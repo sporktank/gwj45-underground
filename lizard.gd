@@ -8,7 +8,7 @@ export(int) var max_mine_distance := 2
 export(int) var max_mine_distance_diag := 1
 export(bool) var automine_zero_blocks := true
 export(bool) var automine_zero_block_neighbours := true
-export(bool) var can_double_mine := false
+export(bool) var can_double_mine := true
 
 export(Enums.LIZARD_STATE) var state: int = Enums.LIZARD_STATE.IDLE
 var direction := Vector2.RIGHT
@@ -17,7 +17,11 @@ var selector_grid_position: Vector2
 var attack_position: Vector2
 
 onready var debug_label := $Debug
+
 onready var walk_tween := $WalkTween
+onready var fade_tween := $FadeTween
+onready var fade_timer := $FadeTimer
+
 onready var anim := $AnimatedSprite
 onready var raycast_left := $RayCasts/Left
 onready var raycast_right := $RayCasts/Right
@@ -64,7 +68,7 @@ func _update_selector() -> void:
 #		selector_pivot.scale = Vector2.ONE
 	
 	if dist <= max_mine_distance and dist_diag <= max_mine_distance_diag and not state == Enums.LIZARD_STATE.DEAD:
-		if dist == 0 and not can_mine_self:
+		if dist == 0 and not can_double_mine:
 			selector_pivot.visible = false
 		else:
 			selector_pivot.visible = true
@@ -137,10 +141,17 @@ func _check_for_state_change() -> void:
 
 func _idle() -> void:
 	state = Enums.LIZARD_STATE.IDLE
+	
+	if fade_timer.time_left == 0:
+		fade_timer.start()
+	
 	_update_anim()
 
 
 func _walk() -> void:
+	fade_timer.stop()
+	fade_tween.stop_all()
+	modulate.a = 1.0
 	walk_tween.interpolate_property(
 		self, 
 		"position", 
@@ -213,3 +224,9 @@ func _on_AnimatedSprite_frame_changed() -> void:
 func _on_WalkTween_tween_all_completed() -> void:
 	_update_grid_position()
 	_check_for_state_change()
+
+
+func _on_FadeTimer_timeout() -> void:
+	fade_tween.stop_all()
+	fade_tween.interpolate_property(self, "modulate:a", modulate.a, 0.25, 0.5, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	fade_tween.start()

@@ -2,12 +2,14 @@ extends YSort
 class_name Snake
 
 
-export(float) var move_duration := 0.3
+export(float) var move_duration := 1.3
 
 export(Enums.SNAKE_STATE) var state: int = Enums.SNAKE_STATE.INACTIVE
 var is_moving := false
 var direction := Vector2.DOWN
 var next_direction := Vector2.DOWN
+
+var head_center_position: Vector2
 
 var head: SnakePiece = null
 var tail: SnakePiece = null
@@ -23,8 +25,9 @@ onready var raycast_up := $RayCasts/Up
 onready var raycast_down := $RayCasts/Down
 
 
-#func _ready() -> void:
-#	init_snake(Vector2.ZERO, Vector2.RIGHT, 3)
+func _ready() -> void:
+	init_snake(Vector2.ZERO, Vector2.DOWN, 5)
+	state = Enums.SNAKE_STATE.STILL
 
 
 func _process(delta: float) -> void:
@@ -90,6 +93,8 @@ func init_snake(position: Vector2, start_direction: Vector2, length: int) -> voi
 	head = pieces.get_child(0)
 	tail = pieces.get_child(length - 1)
 	tail.collision_shape.disabled = true
+	
+	head_center_position = head.center.global_position
 
 
 func grow(amount: int) -> void:
@@ -118,6 +123,9 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 	for piece_ in pieces.get_children():
 		var piece := (piece_ as SnakePiece)
 		piece.animate_move(move_tween, grow_tail, move_duration)
+	
+	# Interpolate a reference to the visual center of the snake.
+	move_tween.interpolate_property(self, "head_center_position", head.next_piece.center.global_position, head.center.global_position, move_duration, Tween.TRANS_LINEAR)
 	
 	move_tween.start()
 	yield(move_tween, "tween_all_completed")
