@@ -11,6 +11,9 @@ export(float) var max_density := 0.37
 var height: int
 var block_map := []
 
+var treasure_collected = 0
+var treasure_value_collected = 0
+
 onready var game_tilemap := $Game
 onready var floor_tilemap := $Floor
 onready var loot_tilemap := $Loot
@@ -67,7 +70,7 @@ func generate() -> void:
 	# Enforce some structure.
 	block_map[7][0].is_border = false
 	block_map[7][0].is_mine = false
-	block_map[7][0].solid = false #; block_map[7][1].solid = false
+	block_map[7][0].solid = false ; block_map[7][1].solid = false ; block_map[6][1].solid = false ; block_map[8][1].solid = false
 	block_map[6][1].is_mine = false ; block_map[7][1].is_mine = false ; block_map[8][1].is_mine = false
 	block_map[6][2].is_mine = false ; block_map[7][2].is_mine = false ; block_map[8][2].is_mine = false
 	block_map[6][3].is_mine = false ; block_map[7][3].is_mine = false ; block_map[8][3].is_mine = false
@@ -245,7 +248,7 @@ func _cascade_zero_blocks(start_x: int, start_y: int, mine_all_numbers: bool) ->
 
 
 func _add_rock_crumble(x: int, y: int) -> void:
-	var rock_crumble := Scenes.ROCK_CRUMBLE.instance()
+	var rock_crumble := Scenes.ROCK_CRUMBLE.instance() as RockCrumble
 	y_sort.add_child(rock_crumble)
 	rock_crumble.global_position = Vector2(x, y+1) * Global.BLOCK_SIZE
 
@@ -285,17 +288,40 @@ func _on_snake_swallowed(snake: Snake, x: int, y: int) -> void:
 		
 		elif block.loot_value > 0:
 			Events.emit_signal("loot_collected", block.loot_value)
+			treasure_collected += 1
+			treasure_value_collected += Enums.TREASURE_VALUE[block.loot_value]
 			_spawn_loot_collected_effect(block.loot_value, x, y)
 			block.loot_value = Enums.LOOT.NOTHING
 			_update_tilemaps()
 
 
 func _spawn_loot_collected_effect(value: int, x: int, y: int) -> void:
-	var e := Scenes.LOOT_EFFECT.instance()
-	match value:
-		Enums.LOOT.TREASURE_1: e.text = "+10"
-		Enums.LOOT.TREASURE_2: e.text = "+50"
-		Enums.LOOT.TREASURE_3: e.text = "+100"
+	var e := Scenes.LOOT_EFFECT.instance() as LootEffect
+	e.text = "$" + str(Enums.TREASURE_VALUE[value])
 	e.velocity = -64.0
 	collection_effects.add_child(e)
 	e.global_position = Vector2(x + 0.5, y + 0.5) * Global.BLOCK_SIZE
+
+
+func get_correct_mine_count() -> int:
+	var count := 0
+	
+	for y in range(1, height-1):
+		for x in range(1, width-1):
+			var block := (block_map[x][y] as Block)
+			if block.is_mine and block.flagged:
+				count += 1
+	
+	return count
+
+
+func get_depth_mined() -> int:
+	var depth := 1
+	
+	for y in range(1, height-1):
+		for x in range(1, width-1):
+			var block := (block_map[x][y] as Block)
+			if not block.solid:
+				depth = y+1
+	
+	return depth

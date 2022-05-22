@@ -21,6 +21,7 @@ enum SNAKE_STATE {
 	STILL = 0,
 	MOVING = 1,
 	DEAD = 2,
+	WON = 3,
 }
 
 enum LOOT {
@@ -30,3 +31,11 @@ enum LOOT {
 	TREASURE_3 = 3,
 	TREASURE_4 = 4,
 }
+
+const TREASURE_VALUE := [
+	0,
+	100,
+	200,
+	1000,
+	0,
+]

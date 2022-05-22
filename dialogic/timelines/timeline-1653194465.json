@@ -1,0 +1,15 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "If ye ask me, ye should learn from yer mistakes and stay outta-"
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.4.1",
+		"file": "timeline-1653194465.json",
+		"name": "transition2"
+	}
+}

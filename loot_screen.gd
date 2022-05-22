@@ -1,4 +1,5 @@
 extends ColorRect
+class_name LootScreen
 
 
 var loot_value := 0

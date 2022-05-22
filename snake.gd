@@ -69,12 +69,18 @@ func _process(delta: float) -> void:
 						break
 				
 				if _check_for_death(next):
+					_move(next, true, true)
 					state = Enums.SNAKE_STATE.DEAD
+					Events.emit_signal("snake_died", self)
 					
 				else:
 					_move(next, _grow_amount > 0)
 					if _grow_amount > 0: 
 						_grow_amount -= 1
+		
+		Enums.SNAKE_STATE.WON:
+			if not is_moving:
+				_move(direction, false)
 
 
 func _check_for_death(new_direction: Vector2) -> bool:
@@ -83,6 +89,10 @@ func _check_for_death(new_direction: Vector2) -> bool:
 	if new_direction == Vector2.LEFT and raycast_left.is_colliding(): return true
 	if new_direction == Vector2.RIGHT and raycast_right.is_colliding(): return true
 	return false
+
+
+func get_length() -> int:
+	return pieces.get_child_count()
 
 
 func init_snake(position: Vector2, start_direction: Vector2, length: int) -> void:
@@ -114,12 +124,13 @@ func grow(amount: int) -> void:
 	_grow_amount += amount
 
 
-func _move(new_direction: Vector2, grow_tail := false) -> void:
+func _move(new_direction: Vector2, grow_tail := false, is_death_move := false) -> void:
 	if is_moving:
 		return
 	
 	is_moving = true
-	state = Enums.SNAKE_STATE.MOVING
+	if state == Enums.SNAKE_STATE.STILL:
+		state = Enums.SNAKE_STATE.MOVING
 	direction = new_direction
 	#next_direction = Vector2.ZERO #new_direction
 	
@@ -135,10 +146,11 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 	# Animate.
 	for piece_ in pieces.get_children():
 		var piece := (piece_ as SnakePiece)
-		piece.animate_move(move_tween, grow_tail, move_duration)
+		piece.animate_move(move_tween, grow_tail, move_duration * (0.5 if is_death_move else 1.0), is_death_move)
 	
 	# Interpolate a reference to the visual center of the snake.
-	move_tween.interpolate_property(self, "head_center_position", head.next_piece.center.global_position, head.center.global_position, move_duration, Tween.TRANS_LINEAR)
+	if not is_death_move:
+		move_tween.interpolate_property(self, "head_center_position", head.next_piece.center.global_position, head.center.global_position, move_duration, Tween.TRANS_LINEAR)
 	
 	move_tween.start()
 	yield(move_tween, "tween_all_completed")
@@ -146,6 +158,10 @@ func _move(new_direction: Vector2, grow_tail := false) -> void:
 	# TODO: Probably should centralise this kind of logic somewhere.
 	var grid_position = ((head.global_position - Vector2(0, 64)) / Global.BLOCK_SIZE).round()
 	Events.emit_signal("snake_swallowed", self, int(grid_position.x), int(grid_position.y))
+	
+	if grid_position.y <= 0 and state != Enums.SNAKE_STATE.WON:
+		state = Enums.SNAKE_STATE.WON
+		Events.emit_signal("snake_won", self)
 	
 	if grow_tail:
 		pass # Nothing to do?

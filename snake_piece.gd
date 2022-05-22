@@ -37,7 +37,7 @@ func _vec2_to_dir(v: Vector2) -> String:
 	return ""
 
 
-func animate_move(tween: Tween, grow_tail := false, duration := 0.3) -> void:
+func animate_move(tween: Tween, grow_tail := false, duration := 0.3, is_death_move := false) -> void:
 	
 	if is_tail() and grow_tail:
 		return
@@ -66,8 +66,11 @@ func animate_move(tween: Tween, grow_tail := false, duration := 0.3) -> void:
 		anim_name = "body_%s_body_%s" % [to_dir, from_dir]
 	
 	anim.animation = anim_name if anim_name in anim.frames.get_animation_names() else "_empty"
-	#tween.interpolate_property(anim, "frame", 0, NUM_FRAMES - 1, duration)
-	tween.interpolate_property(self, "frac_frame", 0, NUM_FRAMES, duration)
+	if not is_death_move:
+		#tween.interpolate_property(anim, "frame", 0, NUM_FRAMES - 1, duration)
+		tween.interpolate_property(self, "frac_frame", 0, NUM_FRAMES, duration)
+	else:
+		tween.interpolate_property(self, "frac_frame", 0, 1, duration)
 
 
 func _set_frac_frame(value: float) -> void:

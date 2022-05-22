@@ -1,4 +1,5 @@
 extends AnimatedSprite
+class_name RockCrumble
 
 
 func _ready() -> void:

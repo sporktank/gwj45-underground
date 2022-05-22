@@ -6,7 +6,7 @@
 outline_size = 1
 outline_color = Color( 0.121569, 0.129412, 0.0352941, 1 )
 extra_spacing_top = 4
-extra_spacing_bottom = 4
+extra_spacing_bottom = 6
 font_data = ExtResource( 1 )
 
 [node name="HelpScreen" type="ColorRect"]
@@ -33,7 +33,7 @@ CREDITS
 
 MythicalWaterStone - @mythical_water - mythicalwater.net
 SporkTank - @TankSpork - sporktank.com
-Wingless Pegasus - links?"
+Wingless Pegasus - twitch.tv/pegapaints"
 align = 1
 valign = 1
 __meta__ = {

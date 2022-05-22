@@ -1,4 +1,5 @@
 extends Node2D
+class_name LootEffect
 
 
 var duration := 1.0
