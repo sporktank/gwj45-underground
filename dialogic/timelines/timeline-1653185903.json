@@ -1,0 +1,19 @@
+{
+	"events": [
+		{
+			"character": "",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "Well, this place is littered with explosives… and dust... could do with a good sweep, if ye ask me. \n\nThankfully, whoever put those explosives ‘ere signified their locations with some convenient number-shaped rocks. \n\nIf ya think ye’ve sniffed out a bomb, place some planks over it. it’ll help ye remember it, and ye’ll be able to safely step over the boulders. \n\nIt’s a dangerous adventure, but I know the rumours o’ the treasures inside are more persuasive than I could e’er be."
+		},
+		{
+			"event_id": "dialogic_022",
+			"transition_duration": 0.5
+		}
+	],
+	"metadata": {
+		"dialogic-version": "1.4.1",
+		"file": "timeline-1653185903.json",
+		"name": "tutorial"
+	}
+}

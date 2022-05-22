@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://fonts/dogicapixel.ttf" type="DynamicFontData" id=1]
+
+[sub_resource type="DynamicFont" id=1]
+outline_size = 1
+outline_color = Color( 0.121569, 0.129412, 0.0352941, 1 )
+extra_spacing_top = 4
+extra_spacing_bottom = 4
+font_data = ExtResource( 1 )
+
+[node name="HelpScreen" type="ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.847059 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = SubResource( 1 )
+text = "HOW TO PLAY
+
+wasd/arrows = move
+space/lmb = mine
+shift/rmb = place flag
+alt+enter = toggle fullscreen
+
+
+CREDITS
+
+MythicalWaterStone - @mythical_water - mythicalwater.net
+SporkTank - @TankSpork - sporktank.com
+Wingless Pegasus - links?"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

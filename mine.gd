@@ -89,7 +89,7 @@ func generate() -> void:
 		var s := float(section) / float(num_sections - 1)
 		
 		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-3, 3, s) + int(rand_range(-1, 1)))
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(0, 5, s) + int(rand_range(-1, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(0, 4, s) + int(rand_range(0, 0)))
 		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(4, 1, s) + int(rand_range(-1, 1)))
 		#_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(5, 0, s) + int(rand_range(-1, 1)))
 	
@@ -141,7 +141,7 @@ func _set_block(x: int, y: int, block: Block) -> void:
 	loot_tilemap.set_cell(x, y, block.loot_value - 1)
 	roof_tilemap.set_cell(x, y, 0 if block.is_border else -1)
 	rocks_tilemap.set_cell(x, y, 0 if not block.is_border and block.solid else -1)
-	flags_tilemap.set_cell(x, y, 0 if block.flagged else -1)
+	flags_tilemap.set_cell(x, y, 1 if block.is_mine and not block.solid else 0 if block.flagged else -1)
 
 
 func _block_to_floor_tile(block: Block) -> int:
@@ -154,7 +154,7 @@ func _block_to_floor_tile(block: Block) -> int:
 func _block_to_game_tile(block: Block) -> int:
 	if block.is_border:
 		return 9
-	elif block.flagged:
+	elif block.flagged or (block.is_mine and not block.solid):
 		return 0
 	elif block.is_mine:
 		return 19
@@ -177,6 +177,9 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int, recurse := true) -> voi
 		return
 	
 	if block.is_mine:
+		block.solid = false
+		_add_rock_crumble(x, y)
+		_update_tilemaps()
 		lizard.die()
 		Events.emit_signal("lizard_died", lizard)
 	
