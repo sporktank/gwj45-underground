@@ -4,9 +4,9 @@ class_name Game
 
 const LOOT_TEXT := [
 	"",
-	"An old coin with a monkey on it! This was probably worth heaps ages ago, but not any more.",
-	"",
-	"",
+	"An old coin with a monkey on it! This was probably very valuable in the past.. but not any more.",
+	"Very fancy! Not for drinking orange juice from though..",
+	"JACKPOT!!!! now that's a cool skull, though a little scary...",
 ]
 
 var time_played := 0.0
@@ -17,7 +17,6 @@ var show_loot_overlay := [
 	true, # Enums.LOOT.TREASURE_2
 	true, # Enums.LOOT.TREASURE_3
 ]
-
 
 onready var camera := $Container/Camera as Camera2D
 onready var lizard := $Container/Lizard as Lizard

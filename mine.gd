@@ -283,6 +283,7 @@ func _on_snake_swallowed(snake: Snake, x: int, y: int) -> void:
 		
 		if block.number > 0:
 			snake.grow(block.number)
+			_spawn_loot_collected_effect("+" + str(block.number), x, y)
 			block.number = 0
 			_update_tilemaps()
 		
@@ -290,14 +291,14 @@ func _on_snake_swallowed(snake: Snake, x: int, y: int) -> void:
 			Events.emit_signal("loot_collected", block.loot_value)
 			treasure_collected += 1
 			treasure_value_collected += Enums.TREASURE_VALUE[block.loot_value]
-			_spawn_loot_collected_effect(block.loot_value, x, y)
+			_spawn_loot_collected_effect("$" + str(Enums.TREASURE_VALUE[block.loot_value]), x, y)
 			block.loot_value = Enums.LOOT.NOTHING
 			_update_tilemaps()
 
 
-func _spawn_loot_collected_effect(value: int, x: int, y: int) -> void:
+func _spawn_loot_collected_effect(text: String, x: int, y: int) -> void:
 	var e := Scenes.LOOT_EFFECT.instance() as LootEffect
-	e.text = "$" + str(Enums.TREASURE_VALUE[value])
+	e.text = text
 	e.velocity = -64.0
 	collection_effects.add_child(e)
 	e.global_position = Vector2(x + 0.5, y + 0.5) * Global.BLOCK_SIZE

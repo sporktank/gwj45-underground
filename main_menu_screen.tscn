@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://ui/start.png" type="Texture" id=1]
 [ext_resource path="res://ui/start_clicked.png" type="Texture" id=2]
@@ -8,6 +8,13 @@
 [ext_resource path="res://ui/settings_clicked.png" type="Texture" id=6]
 [ext_resource path="res://ui/mythicalsporkasus.png" type="Texture" id=7]
 [ext_resource path="res://main_menu_screen.gd" type="Script" id=8]
+[ext_resource path="res://fonts/dogicapixel.ttf" type="DynamicFontData" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 72
+extra_spacing_top = 10
+extra_spacing_bottom = 10
+font_data = ExtResource( 9 )
 
 [node name="MainMenuScreen" type="Control"]
 anchor_left = 0.5
@@ -19,6 +26,19 @@ margin_top = -270.0
 margin_right = 480.0
 margin_bottom = 270.0
 script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+anchor_right = 1.0
+margin_bottom = 271.0
+custom_fonts/font = SubResource( 1 )
+text = "SNAKE
+SWEEPER"
+align = 1
+valign = 1
+clip_text = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
