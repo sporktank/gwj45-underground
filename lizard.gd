@@ -156,6 +156,7 @@ func _idle() -> void:
 
 func _walk() -> void:
 	_stop_fade()
+	$Audio/Move.play()
 	walk_tween.interpolate_property(
 		self, 
 		"position", 
@@ -180,6 +181,7 @@ func _attack() -> void:
 func _flag() -> void:
 	_stop_fade()
 	state = Enums.LIZARD_STATE.FLAG
+	get_node("Audio/Flag" + str(randi()%3+1)).play()
 	_update_anim()
 
 

@@ -3,10 +3,10 @@ class_name Mine
 
 
 export(int) var width := Global.MAP_WIDTH
-export(int) var num_sections := 15
+export(int) var num_sections := 12
 export(int) var section_height := 10
-export(float) var min_density := 0.12
-export(float) var max_density := 0.37
+export(float) var min_density := 0.14
+export(float) var max_density := 0.35
 
 var height: int
 var block_map := []
@@ -91,8 +91,8 @@ func generate() -> void:
 		
 		var s := float(section) / float(num_sections - 1)
 		
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-3, 3, s) + int(rand_range(-1, 1)))
-		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(0, 4, s) + int(rand_range(0, 0)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_3, lerp(-3, 3, s) + int(rand_range(0, 1)))
+		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_2, lerp(0, 6, s) + int(rand_range(0, 0)))
 		_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(4, 1, s) + int(rand_range(-1, 1)))
 		#_place_treasure_in_range(y0, y1, Enums.LOOT.TREASURE_1, lerp(5, 0, s) + int(rand_range(-1, 1)))
 	
@@ -181,13 +181,16 @@ func _on_lizard_attacked(lizard: Lizard, x: int, y: int, recurse := true) -> voi
 	
 	if block.is_mine:
 		block.solid = false
+		get_node("Audio/Mine" + str(randi()%3+1)).play()
 		_add_rock_crumble(x, y)
 		_update_tilemaps()
 		lizard.die()
+		$Audio/LizardDeath.play()
 		Events.emit_signal("lizard_died", lizard)
 	
 	elif block.solid:
 		block.solid = false
+		get_node("Audio/Mine" + str(randi()%3+1)).play()
 		_add_rock_crumble(x, y)
 		if block.number == 0:
 			if lizard.automine_zero_blocks:
@@ -284,11 +287,13 @@ func _on_snake_swallowed(snake: Snake, x: int, y: int) -> void:
 		if block.number > 0:
 			snake.grow(block.number)
 			_spawn_loot_collected_effect("+" + str(block.number), x, y)
+			$Audio/SnakeGrow.play()
 			block.number = 0
 			_update_tilemaps()
 		
 		elif block.loot_value > 0:
 			Events.emit_signal("loot_collected", block.loot_value)
+			$Audio/Loot.play()
 			treasure_collected += 1
 			treasure_value_collected += Enums.TREASURE_VALUE[block.loot_value]
 			_spawn_loot_collected_effect("$" + str(Enums.TREASURE_VALUE[block.loot_value]), x, y)

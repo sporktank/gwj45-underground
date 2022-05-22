@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/snake_hit_wall.wav-4974c355e1ffd469149a23e5aef7e4d2.sample"
+
+[deps]
+
+source_file="res://audio/snake_hit_wall.wav"
+dest_files=[ "res://.import/snake_hit_wall.wav-4974c355e1ffd469149a23e5aef7e4d2.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

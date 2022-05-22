@@ -6,7 +6,9 @@ var skip_tutorial := false
 onready var tween := $Tween
 onready var lizard := $Lizard
 onready var bird := $Bird
+onready var bird_talk := $BirdTalk
 onready var snake := $Snake
+onready var snake_talk := $SnakeTalk
 onready var black := $Black
 
 
@@ -37,6 +39,7 @@ func play_transition(delay: float) -> void:
 	
 	yield(get_tree().create_timer(0.2), "timeout")
 	bird.play("speak")
+	bird_talk.play()
 	var dialog = Dialogic.start("transition") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_transition_end")
 
@@ -48,6 +51,7 @@ func _on_transition_end(timeline_name: String) -> void:
 	yield(get_tree().create_timer(1.0), "timeout")
 	
 	bird.play("speak")
+	bird_talk.play()
 	var dialog = Dialogic.start("transition2") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_transition2_end")
 
@@ -56,10 +60,12 @@ func _on_transition2_end(timeline_name: String) -> void:
 	yield(get_tree().create_timer(0.2), "timeout")
 	
 	snake.play("speak")
+	snake_talk.play()
 	var dialog = Dialogic.start("transition3") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_transition3_end")
 
 func _on_transition3_end(timeline_name: String) -> void:
+	bird_talk.stop()
 	snake.play("slither")
 	yield(get_tree().create_timer(1.0), "timeout")
 	black.visible = true
@@ -100,6 +106,7 @@ func play_intro(delay: float) -> void:
 	yield(get_tree().create_timer(0.5), "timeout")
 	
 	bird.play("speak")
+	bird_talk.play()
 	var dialog = Dialogic.start("intro") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_intro_end")
 	dialog.connect("dialogic_signal", self, "_on_intro_signal")
@@ -114,6 +121,8 @@ func _on_intro_end(timeline_name: String) -> void:
 		play_tutorial()
 
 func play_no_tutorial() -> void:
+	bird.play("speak")
+	bird_talk.play()
 	var dialog = Dialogic.start("no_tutorial") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_no_tutorial_end")
 
@@ -121,6 +130,8 @@ func _on_no_tutorial_end(timeline_name: String) -> void:
 	play_start_game()
 
 func play_tutorial() -> void:
+	bird.play("speak")
+	bird_talk.play()
 	var dialog = Dialogic.start("tutorial") ; add_child(dialog)
 	dialog.connect("timeline_end", self, "_on_tutorial_end")
 

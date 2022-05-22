@@ -70,6 +70,7 @@ func _process(delta: float) -> void:
 				
 				if _check_for_death(next):
 					_move(next, true, true)
+					$Audio/Death.play()
 					state = Enums.SNAKE_STATE.DEAD
 					Events.emit_signal("snake_died", self)
 					
@@ -129,6 +130,7 @@ func _move(new_direction: Vector2, grow_tail := false, is_death_move := false) -
 		return
 	
 	is_moving = true
+	$Audio/Move.play()
 	if state == Enums.SNAKE_STATE.STILL:
 		state = Enums.SNAKE_STATE.MOVING
 	direction = new_direction

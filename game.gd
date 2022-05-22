@@ -52,6 +52,13 @@ func _process(delta: float) -> void:
 	_update_camera()
 
 
+func fade_in() -> void:
+	black.visible = true
+	black.modulate.a = 1.0
+	tween.interpolate_property(black, "modulate:a", 1.0, 0.0, 2.0, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	tween.start()
+
+
 func _on_snake_died(snake: Snake) -> void:
 	black.visible = true
 	black.modulate.a = 0.0
@@ -62,7 +69,15 @@ func _on_snake_died(snake: Snake) -> void:
 	yield(tween, "tween_all_completed")
 	
 	black.visible = false
-	Events.emit_signal("game_over")
+	Events.emit_signal("game_over", {
+		treasure_collected=mine.treasure_collected,
+		treasure_value=mine.treasure_value_collected,
+		snake_length=snake.get_length(),
+		mines_identified=mine.get_correct_mine_count(),
+		depth_reached=mine.get_depth_mined(),
+		time_played=time_played,
+		success=snake.state == Enums.SNAKE_STATE.WON,
+	})
 
 
 func _on_snake_won(snake: Snake) -> void:

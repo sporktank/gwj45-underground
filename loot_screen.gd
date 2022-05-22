@@ -13,6 +13,7 @@ onready var text_label := $Text
 func _ready() -> void:
 	sprite.frame = loot_value
 	text_label.text = text
+	$Noise.play()
 
 
 func _input(event: InputEvent) -> void:

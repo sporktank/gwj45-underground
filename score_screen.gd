@@ -6,7 +6,7 @@ treasure value: $%d
 length of snake: %d
 mines correctly identified: %d
 depth reached: %d
-time played: %d:%d
+time played: %d:%0d
 
 %s"""
 const SUCCESS := "Enjoy the spoils of victory!"

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Joshua_McLean_-_Mountain_Trials.mp3-e6e6b43fa0c04ed8a7f03b66c7bb284a.mp3str"
+
+[deps]
+
+source_file="res://audio/Joshua_McLean_-_Mountain_Trials.mp3"
+dest_files=[ "res://.import/Joshua_McLean_-_Mountain_Trials.mp3-e6e6b43fa0c04ed8a7f03b66c7bb284a.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

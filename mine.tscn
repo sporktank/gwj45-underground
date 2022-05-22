@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://mine.gd" type="Script" id=1]
 [ext_resource path="res://blocks/debug.png" type="Texture" id=2]
@@ -8,6 +8,10 @@
 [ext_resource path="res://blocks/treasure.png" type="Texture" id=6]
 [ext_resource path="res://blocks/rocks-full.png" type="Texture" id=7]
 [ext_resource path="res://blocks/bomb-location.png" type="Texture" id=8]
+[ext_resource path="res://audio/mining.wav" type="AudioStream" id=9]
+[ext_resource path="res://audio/lizard_death.wav" type="AudioStream" id=10]
+[ext_resource path="res://audio/snake_eat.wav" type="AudioStream" id=11]
+[ext_resource path="res://audio/score_added.wav" type="AudioStream" id=12]
 
 [sub_resource type="ConvexPolygonShape2D" id=2]
 points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
@@ -731,3 +735,34 @@ tile_data = PoolIntArray( 262152, 0, 1, 262153, 0, 196610, 262154, 0, 3, 327688,
 
 [node name="CollectionEffects" type="Node2D" parent="."]
 z_index = 1
+
+[node name="Audio" type="Node2D" parent="."]
+
+[node name="Mine1" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 9 )
+volume_db = 8.0
+attenuation = 1.0
+
+[node name="Mine2" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 9 )
+volume_db = 8.0
+pitch_scale = 0.95
+attenuation = 1.0
+
+[node name="Mine3" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 9 )
+volume_db = 8.0
+pitch_scale = 1.05
+attenuation = 1.0
+
+[node name="LizardDeath" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 10 )
+volume_db = 11.0
+
+[node name="SnakeGrow" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 11 )
+volume_db = -7.0
+pitch_scale = 2.5
+
+[node name="Loot" type="AudioStreamPlayer2D" parent="Audio"]
+stream = ExtResource( 12 )

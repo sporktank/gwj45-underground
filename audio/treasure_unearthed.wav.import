@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/treasure_unearthed.wav-d1cc796dbe98f014150509195686869e.sample"
+
+[deps]
+
+source_file="res://audio/treasure_unearthed.wav"
+dest_files=[ "res://.import/treasure_unearthed.wav-d1cc796dbe98f014150509195686869e.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

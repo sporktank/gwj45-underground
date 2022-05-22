@@ -11,12 +11,17 @@ onready var help_screen := $UI/HelpScreen
 onready var scores_screen := $UI/ScoresScreen
 onready var game_container := $GameContainer
 
+onready var music1 := $Audio/Music1
+onready var music2 := $Audio/Music2
+
 
 func _ready() -> void:
 	Events.connect("intro_finished", self, "_on_intro_finished")
 	Events.connect("game_transition_ready", self, "_on_game_transition_ready")
 	Events.connect("transition_finished", self, "_on_transition_finished")
 	Events.connect("game_over", self, "_on_game_over")
+	
+	music1.play()
 
 
 func _input(event: InputEvent) -> void:
@@ -41,6 +46,7 @@ func _on_intro_finished() -> void:
 	game = Scenes.GAME.instance()
 	game_container.add_child(game)
 	scenic_view.hide()
+	game.fade_in()
 
 
 func _on_game_transition_ready() -> void:
@@ -53,9 +59,15 @@ func _on_game_transition_ready() -> void:
 func _on_transition_finished() -> void:
 	game.change_to_snake_game()
 	scenic_view.hide()
+	game.fade_in()
+	music1.stop()
+	music2.play()
 
 
 func _on_game_over(stats: Dictionary) -> void:
 	scenic_view.show()
 	scores_screen.set_data(stats)
 	scores_screen.show()
+	game.queue_free()
+	#music1.play()
+	#music2.stop()
